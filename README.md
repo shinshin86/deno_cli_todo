@@ -33,3 +33,11 @@ SUBCOMMANDS:
 ```sh
 deno compile --allow-read --allow-write --output ct cli.ts
 ```
+
+## Licence
+
+[MIT](https://github.com/shinshin86/deno_cli_todo/blob/main/LICENSE)
+
+## Author
+
+[Yuki Shindo](https://shinshin86.com)

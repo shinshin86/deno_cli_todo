@@ -27,6 +27,12 @@ function getWidth(width: number, margin: number): number {
   return (margin * 2) + width;
 }
 
+function getTableContent(tableStr: string, taskDisplaySize: number): string {
+  return tableStr.length <= taskDisplaySize
+    ? tableStr.padEnd(taskDisplaySize, " ")
+    : tableStr.substring(0, taskDisplaySize);
+}
+
 function createTableHeader(task: Task): string {
   let result: string = "";
 
@@ -120,23 +126,17 @@ function addTable(task: Task): string {
       result += TABLE_CHARS.verticalLine;
 
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -188,23 +188,17 @@ function createTableFooter(task: Task): string {
       result += TABLE_CHARS.verticalLine;
 
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
       const tableStr = `${margin}${task[key]}${margin}`;
-      result += tableStr.length <= taskDisplaySize
-        ? tableStr.padEnd(taskDisplaySize, " ")
-        : tableStr.substring(0, taskDisplaySize);
+      result += getTableContent(tableStr, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }

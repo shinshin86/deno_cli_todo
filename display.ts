@@ -27,16 +27,31 @@ function getWidth(width: number, margin: number): number {
   return (margin * 2) + width;
 }
 
-function getTableContent(taskItem: string, taskDisplaySize: number): string {
+function getTableContent(
+  taskItem: string,
+  taskKey: string,
+  taskDisplaySize: number,
+): string {
   const margin = getChars(MARGIN, " ");
 
   if (`${margin}${taskItem}`.length < taskDisplaySize) {
-    const tableStr = `${margin}${taskItem}${margin}`;
+    const startMargin: number = taskItem.length - taskKey.length;
+    const endMargin: number = MARGIN + startMargin;
+    const startMarginChars: string = getChars(
+      startMargin > 0 ? startMargin : MARGIN,
+      " ",
+    );
+    const endMarginChars: string = getChars(
+      endMargin > 0 ? endMargin : MARGIN,
+      " ",
+    );
+
+    const tableStr = `${startMarginChars}${taskItem}${endMarginChars}`;
     return tableStr.length < taskDisplaySize
       ? tableStr.padEnd(taskDisplaySize, " ")
       : tableStr.substring(0, taskDisplaySize);
   } else {
-    return ` ${taskItem}`.substring(0, taskDisplaySize - 3) + "... ";
+    return ` ${taskItem}`.substring(0, taskDisplaySize - 4) + "... ";
   }
 }
 
@@ -132,15 +147,15 @@ function addTable(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -191,15 +206,15 @@ function createTableFooter(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), taskDisplaySize);
+      result += getTableContent(String(task[key]), key, taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }

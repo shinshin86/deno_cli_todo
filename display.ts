@@ -27,10 +27,17 @@ function getWidth(width: number, margin: number): number {
   return (margin * 2) + width;
 }
 
-function getTableContent(tableStr: string, taskDisplaySize: number): string {
-  return tableStr.length <= taskDisplaySize
-    ? tableStr.padEnd(taskDisplaySize, " ")
-    : tableStr.substring(0, taskDisplaySize);
+function getTableContent(taskItem: string, taskDisplaySize: number): string {
+  const margin = getLine(MARGIN, " ");
+
+  if (`${margin}${taskItem}`.length < taskDisplaySize) {
+    const tableStr = `${margin}${taskItem}${margin}`;
+    return tableStr.length < taskDisplaySize
+      ? tableStr.padEnd(taskDisplaySize, " ")
+      : tableStr.substring(0, taskDisplaySize);
+  } else {
+    return ` ${taskItem}`.substring(0, taskDisplaySize - 3) + "... ";
+  }
 }
 
 function createTableHeader(task: Task): string {
@@ -125,18 +132,15 @@ function addTable(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -187,18 +191,15 @@ function createTableFooter(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      const tableStr = `${margin}${task[key]}${margin}`;
-      result += getTableContent(tableStr, taskDisplaySize);
+      result += getTableContent(String(task[key]), taskDisplaySize);
 
       result += TABLE_CHARS.verticalLine;
     }

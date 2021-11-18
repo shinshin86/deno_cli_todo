@@ -6,4 +6,6 @@ export interface Task {
   completedAt: Date | null;
   isDone: boolean;
   isDelete: boolean;
+  // TODO
+  [key: string]: string | number | boolean | Date | null;
 }

@@ -1,4 +1,5 @@
 import { Task } from "./interface.ts";
+import { getDatetime } from "./datetime.ts";
 
 async function addTask(dataFilePath: string, text: string): Promise<Task> {
   const taskList: Array<Task> = await collectTask(dataFilePath);
@@ -10,7 +11,7 @@ async function addTask(dataFilePath: string, text: string): Promise<Task> {
     id,
     text,
     tags: "",
-    createdAt: new Date(),
+    createdAt: getDatetime(),
     completedAt: null,
     isDone: false,
     isDelete: false,
@@ -59,7 +60,7 @@ async function completeTask(
   const doneTask: Task = Object.assign(
     {},
     targetTask,
-    { isDone: true, completedAt: new Date() },
+    { isDone: true, completedAt: getDatetime() },
   );
 
   const updatedTaskList: Array<Task> = taskList.reduce(

@@ -2,7 +2,7 @@ import { Task } from "./interface.ts";
 
 async function addTask(dataFilePath: string, text: string): Promise<Task> {
   const taskList: Array<Task> = await collectTask(dataFilePath);
-  const latestTaskId = taskList.length ? taskList.slice().reverse()[0].id : 1;
+  const latestTaskId = taskList.length ? taskList.slice().reverse()[0].id : 0;
 
   const id = latestTaskId + 1;
 

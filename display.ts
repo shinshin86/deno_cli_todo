@@ -19,7 +19,7 @@ const TABLE_CHARS = {
 
 const MARGIN = 10;
 
-function getLine(width: number, str: string): string {
+function getChars(width: number, str: string): string {
   return Array.from(Array(width), () => str).join("");
 }
 
@@ -28,7 +28,7 @@ function getWidth(width: number, margin: number): number {
 }
 
 function getTableContent(taskItem: string, taskDisplaySize: number): string {
-  const margin = getLine(MARGIN, " ");
+  const margin = getChars(MARGIN, " ");
 
   if (`${margin}${taskItem}`.length < taskDisplaySize) {
     const tableStr = `${margin}${taskItem}${margin}`;
@@ -44,25 +44,25 @@ function createTableHeader(task: Task): string {
   let result: string = "";
 
   const keyList: Array<string> = Object.keys(task);
-  const margin = getLine(MARGIN, " ");
+  const margin = getChars(MARGIN, " ");
 
   // row1
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.topLeft;
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.topMid;
     } else if (keyList.length - 1 === index) {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.topRight;
     } else {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
@@ -94,7 +94,7 @@ function createTableHeader(task: Task): string {
 
 function addTable(task: Task): string {
   let result: string = "";
-  const margin = getLine(MARGIN, " ");
+  const margin = getChars(MARGIN, " ");
 
   const keyList = Object.keys(task);
 
@@ -102,19 +102,19 @@ function addTable(task: Task): string {
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.leftMid;
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
     } else if (keyList.length - 1 === index) {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.rightMid;
     } else {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
@@ -127,7 +127,7 @@ function addTable(task: Task): string {
   // row2
   keyList.forEach((key, index) => {
     const taskDisplaySize: number =
-      getLine(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
+      getChars(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
 
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
@@ -153,7 +153,7 @@ function addTable(task: Task): string {
 
 function createTableFooter(task: Task): string {
   let result: string = "";
-  const margin = getLine(MARGIN, " ");
+  const margin = getChars(MARGIN, " ");
 
   const keyList = Object.keys(task);
 
@@ -161,19 +161,19 @@ function createTableFooter(task: Task): string {
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.leftMid;
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
     } else if (keyList.length - 1 === index) {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.rightMid;
     } else {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
@@ -186,7 +186,7 @@ function createTableFooter(task: Task): string {
   // row2
   keyList.forEach((key, index) => {
     const taskDisplaySize: number =
-      getLine(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
+      getChars(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
 
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
@@ -211,19 +211,19 @@ function createTableFooter(task: Task): string {
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.bottomLeft;
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.bottomMid;
     } else if (keyList.length - 1 === index) {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.bottomRight;
     } else {
-      result += getLine(
+      result += getChars(
         getWidth(key.length, MARGIN),
         TABLE_CHARS.horizontalLine,
       );

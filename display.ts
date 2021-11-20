@@ -34,25 +34,21 @@ function getTableContent(
 ): string {
   const margin = getChars(MARGIN, " ");
 
-  if (`${margin}${taskItem}`.length < taskDisplaySize) {
-    const startMargin: number = taskItem.length - taskKey.length;
-    const endMargin: number = MARGIN + startMargin;
-    const startMarginChars: string = getChars(
-      startMargin > 0 ? startMargin : MARGIN,
-      " ",
-    );
-    const endMarginChars: string = getChars(
-      endMargin > 0 ? endMargin : MARGIN,
-      " ",
-    );
-
-    const tableStr = `${startMarginChars}${taskItem}${endMarginChars}`;
-    return tableStr.length < taskDisplaySize
-      ? tableStr.padEnd(taskDisplaySize, " ")
-      : tableStr.substring(0, taskDisplaySize);
-  } else {
+  if (taskItem.length > taskDisplaySize) {
     return ` ${taskItem}`.substring(0, taskDisplaySize - 4) + "... ";
   }
+
+  const keyItemDiff: number = taskItem.length - taskKey.length;
+
+  if (keyItemDiff < 0) {
+    return `${margin}${taskItem}${margin}`.padEnd(taskDisplaySize, " ");
+  }
+
+  const addMarginSize: number = Math.floor(keyItemDiff / 2);
+  const itemMarginSize: number = MARGIN - addMarginSize;
+  const itemMargin: string = getChars(itemMarginSize, " ");
+
+  return `${itemMargin}${taskItem}${itemMargin}`.substr(0, taskDisplaySize);
 }
 
 function createTableHeader(task: Task): string {

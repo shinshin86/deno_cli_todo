@@ -17,7 +17,7 @@ const TABLE_CHARS = {
   verticalLine: "│",
 };
 
-const MARGIN = 10;
+const MARGIN = 8;
 
 function getChars(width: number, str: string): string {
   return Array.from(Array(width), () => str).join("");

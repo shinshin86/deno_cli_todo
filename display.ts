@@ -1,4 +1,5 @@
 import { Task } from "./interface.ts";
+
 const RESET_COLOR = "\x1b[0m";
 const FONT_COLOR_RED = "\x1b[31m";
 const FONT_COLOR_GREEN = "\x1b[32m";
@@ -17,64 +18,101 @@ const TABLE_CHARS = {
   verticalLine: "│",
 };
 
-const MARGIN = 8;
-
 function getChars(width: number, str: string): string {
   return Array.from(Array(width), () => str).join("");
 }
 
-function getWidth(width: number, margin: number): number {
-  return (margin * 2) + width;
+// Reference: https://javascript.programmer-reference.com/javascript-han1zen2/
+function getTextSize(text: string): number {
+  if (!text) return 0;
+
+  let count = 0;
+
+  for (let i = 0; i < text.length; i++) {
+    const code = text.charCodeAt(i);
+    if (
+      (code >= 0x00 && code < 0x81) ||
+      code === 0xf8f0 ||
+      (code >= 0xff61 && code < 0xffa0) ||
+      (code >= 0xf8f1 && code < 0xf8f4)
+    ) {
+      count += 1;
+    } else {
+      count += 2;
+    }
+  }
+
+  return count;
 }
 
 function getTableContent(
   taskItem: string,
-  taskKey: string,
   taskDisplaySize: number,
 ): string {
-  const margin = getChars(MARGIN, " ");
-
-  if (taskItem.length > taskDisplaySize) {
-    return ` ${taskItem}`.substring(0, taskDisplaySize - 4) + "... ";
-  }
-
-  const keyItemDiff: number = taskItem.length - taskKey.length;
-
-  if (keyItemDiff < 0) {
-    return `${margin}${taskItem}${margin}`.padEnd(taskDisplaySize, " ");
-  }
-
-  const addMarginSize: number = Math.floor(keyItemDiff / 2);
-  const itemMarginSize: number = MARGIN - addMarginSize;
-  const itemMargin: string = getChars(itemMarginSize, " ");
-
-  return `${itemMargin}${taskItem}${itemMargin}`.substr(0, taskDisplaySize);
+  return truncateText(taskItem, taskDisplaySize, " ");
 }
 
-function createTableHeader(task: Task): string {
+function truncateText(
+  text: string,
+  maxLength: number,
+  padText: string,
+): string {
+  let textSize = getTextSize(text);
+  let truncateSize = 0;
+
+  if (!textSize) return text.padEnd(maxLength, padText);
+
+  let str: string = "";
+
+  // Reference: https://javascript.programmer-reference.com/javascript-han1zen2/
+  for (let i = 0; i < maxLength; i++) {
+    str += text.substring(i, i + 1);
+    const code = text.charCodeAt(i);
+    if (
+      (code >= 0x00 && code < 0x81) ||
+      code === 0xf8f0 ||
+      (code >= 0xff61 && code < 0xffa0) ||
+      (code >= 0xf8f1 && code < 0xf8f4)
+    ) {
+      textSize -= 1;
+      truncateSize += 0;
+    } else {
+      textSize -= 2;
+      truncateSize += 1;
+    }
+
+    if (textSize === 0) {
+      break;
+    }
+  }
+
+  return str.padEnd(maxLength - truncateSize, padText);
+}
+
+// TODO
+function createTableHeader(task: Task, widthList: any): string {
   let result: string = "";
 
   const keyList: Array<string> = Object.keys(task);
-  const margin = getChars(MARGIN, " ");
 
   // row1
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.topLeft;
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.topMid;
     } else if (keyList.length - 1 === index) {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.topRight;
     } else {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.topMid;
@@ -87,13 +125,13 @@ function createTableHeader(task: Task): string {
   keyList.forEach((key, index) => {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
-      result += `${margin}${key}${margin}`;
+      result += `${key}`.padEnd(widthList[key], " ");
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += `${margin}${key}${margin}`;
+      result += `${key}`.padEnd(widthList[key], " ");
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += `${margin}${key}${margin}`;
+      result += `${key}`.padEnd(widthList[key], " ");
       result += TABLE_CHARS.verticalLine;
     }
   });
@@ -103,10 +141,9 @@ function createTableHeader(task: Task): string {
   return result;
 }
 
-function addTable(task: Task): string {
+// TODO
+function addTable(task: Task, widthList: any): string {
   let result: string = "";
-  const margin = getChars(MARGIN, " ");
-
   const keyList = Object.keys(task);
 
   // row1
@@ -114,19 +151,19 @@ function addTable(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.leftMid;
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
     } else if (keyList.length - 1 === index) {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.rightMid;
     } else {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
@@ -137,21 +174,18 @@ function addTable(task: Task): string {
 
   // row2
   keyList.forEach((key, index) => {
-    const taskDisplaySize: number =
-      getChars(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
-
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -162,10 +196,9 @@ function addTable(task: Task): string {
   return result;
 }
 
-function createTableFooter(task: Task): string {
+// TODO
+function createTableFooter(task: Task, widthList: any): string {
   let result: string = "";
-  const margin = getChars(MARGIN, " ");
-
   const keyList = Object.keys(task);
 
   // row1
@@ -173,19 +206,19 @@ function createTableFooter(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.leftMid;
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
     } else if (keyList.length - 1 === index) {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.rightMid;
     } else {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.midMid;
@@ -196,21 +229,18 @@ function createTableFooter(task: Task): string {
 
   // row2
   keyList.forEach((key, index) => {
-    const taskDisplaySize: number =
-      getChars(getWidth(key.length, MARGIN), TABLE_CHARS.horizontalLine).length;
-
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), key, taskDisplaySize);
+      result += getTableContent(String(task[key]), widthList[key]);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -223,19 +253,19 @@ function createTableFooter(task: Task): string {
     if (index === 0) {
       result += TABLE_CHARS.bottomLeft;
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.bottomMid;
     } else if (keyList.length - 1 === index) {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.bottomRight;
     } else {
       result += getChars(
-        getWidth(key.length, MARGIN),
+        widthList[key],
         TABLE_CHARS.horizontalLine,
       );
       result += TABLE_CHARS.bottomMid;
@@ -247,20 +277,59 @@ function createTableFooter(task: Task): string {
   return result;
 }
 
+function getMaxWidth(
+  key: string,
+  taskList: Array<Task>,
+  defaultMinWidth?: number,
+  defaultMaxWidth?: number | undefined,
+): number {
+  if (!taskList || taskList.length === 0) return 0;
+
+  const valueList: Array<string> = taskList.map((t) =>
+    String(t[key] === "null" ? "" : String(t[key]))
+  );
+
+  let maxWidth = 0;
+  for (const value of valueList) {
+    const width: number = getTextSize(value);
+
+    if (maxWidth < width) {
+      maxWidth = width;
+    }
+  }
+
+  if (defaultMinWidth && defaultMinWidth > maxWidth) {
+    maxWidth = defaultMinWidth;
+  }
+
+  if (defaultMaxWidth && defaultMaxWidth < maxWidth) {
+    maxWidth = defaultMaxWidth;
+  }
+
+  return maxWidth;
+}
+
 function displayTaskList(taskList: Array<Task>): void {
   let result: string = "";
+  const keyList = Object.keys(taskList[0]);
+
+  // TODO
+  let widthList: any = {};
+  for (const key of keyList) {
+    widthList[key] = getMaxWidth(key, taskList, 20, 40);
+  }
 
   taskList.forEach((task, index) => {
     if (index === 0) {
-      result += createTableHeader(task);
+      result += createTableHeader(task, widthList);
     }
 
     if (taskList.length - 1 === index) {
-      result += createTableFooter(task);
+      result += createTableFooter(task, widthList);
       return;
     }
 
-    result += addTable(task);
+    result += addTable(task, widthList);
   });
 
   console.log(result);

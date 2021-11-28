@@ -293,7 +293,7 @@ function displayTaskList(taskList: Array<Task>): void {
   let result: string = "";
   const keyList: Array<keyof Task> = Object.keys(taskList[0]);
 
-  let widthData: Array<keyof Task> | any = {};
+  let widthData: WidthData = {};
   for (const key of keyList) {
     widthData[key] = getMaxWidth(key, taskList, 20, 40);
   }

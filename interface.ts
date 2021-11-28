@@ -9,3 +9,6 @@ export interface Task {
   // TODO
   [key: string]: string | number | boolean | Date | null;
 }
+
+export type KeyName = keyof Task;
+export type WidthData = { [Key in KeyName]: number };

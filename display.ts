@@ -1,28 +1,20 @@
 import { KeyName, Task, WidthData } from "./interface.ts";
 import { TABLE_CHARS } from "./constants.ts";
+import {
+  characterLength,
+} from "https://deno.land/x/deno_eastasianwidth@v0.1.0/mod.ts";
 
 function getChars(width: number, str: string): string {
   return Array.from(Array(width), () => str).join("");
 }
 
-// Reference: https://javascript.programmer-reference.com/javascript-han1zen2/
 function getTextSize(text: string): number {
   if (!text) return 0;
 
   let count = 0;
 
   for (let i = 0; i < text.length; i++) {
-    const code = text.charCodeAt(i);
-    if (
-      (code >= 0x00 && code < 0x81) ||
-      code === 0xf8f0 ||
-      (code >= 0xff61 && code < 0xffa0) ||
-      (code >= 0xf8f1 && code < 0xf8f4)
-    ) {
-      count += 1;
-    } else {
-      count += 2;
-    }
+    count += characterLength(text.charAt(i));
   }
 
   return count;
@@ -47,21 +39,15 @@ function truncateText(
 
   let str: string = "";
 
-  // Reference: https://javascript.programmer-reference.com/javascript-han1zen2/
   for (let i = 0; i < maxLength; i++) {
     str += text.substring(i, i + 1);
-    const code = text.charCodeAt(i);
-    if (
-      (code >= 0x00 && code < 0x81) ||
-      code === 0xf8f0 ||
-      (code >= 0xff61 && code < 0xffa0) ||
-      (code >= 0xf8f1 && code < 0xf8f4)
-    ) {
-      textSize -= 1;
-      truncateSize += 0;
-    } else {
+
+    if (characterLength(text.charAt(i)) === 2) {
       textSize -= 2;
       truncateSize += 1;
+    } else {
+      textSize -= 1;
+      truncateSize += 0;
     }
 
     if (textSize === 0) {

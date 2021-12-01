@@ -40,7 +40,7 @@ function truncateText(
   let str: string = "";
 
   for (let i = 0; i < maxLength; i++) {
-    str += text.substring(i, i + 1);
+    str += text.charAt(i);
 
     if (characterLength(text.charAt(i)) === 2) {
       textSize -= 2;

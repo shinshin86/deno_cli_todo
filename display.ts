@@ -34,6 +34,7 @@ function truncateText(
 ): string {
   let textSize = getTextSize(text);
   let truncateSize = 0;
+  let checkMaxLength = maxLength;
 
   if (!textSize) return text.padEnd(maxLength, padText);
 
@@ -45,12 +46,14 @@ function truncateText(
     if (characterLength(text.charAt(i)) === 2) {
       textSize -= 2;
       truncateSize += 1;
+      checkMaxLength -= 2;
     } else {
       textSize -= 1;
       truncateSize += 0;
+      checkMaxLength -= 1;
     }
 
-    if (textSize === 0) {
+    if (textSize === 0 || checkMaxLength === 0) {
       break;
     }
   }

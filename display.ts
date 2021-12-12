@@ -24,7 +24,9 @@ function getTableContent(
   taskItem: string,
   taskDisplaySize: number,
 ): string {
-  return truncateText(taskItem, taskDisplaySize, " ");
+  return ["null", "false"].includes(taskItem)
+    ? truncateText(" ", taskDisplaySize, " ")
+    : truncateText(taskItem, taskDisplaySize, " ");
 }
 
 function truncateText(

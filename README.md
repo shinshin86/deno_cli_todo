@@ -5,6 +5,10 @@ This is a CLI to-do tool created with Deno.
 **This is still a project in development and does not yet have all the necessary
 features.**
 
+## Screenshot
+
+![Screenshot](./demo/screenshot.png)
+
 ## Usage
 
 ```

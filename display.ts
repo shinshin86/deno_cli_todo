@@ -21,12 +21,23 @@ function getTextSize(text: string): number {
 }
 
 function getTableContent(
+  key: string,
   taskItem: string,
   taskDisplaySize: number,
 ): string {
-  return ["null", "false"].includes(taskItem)
-    ? truncateText(" ", taskDisplaySize, " ")
-    : truncateText(taskItem, taskDisplaySize, " ");
+  if (["null", "false"].includes(taskItem)) {
+    return truncateText(" ", taskDisplaySize, " ");
+  }
+
+  if (("isDone" === key) && taskItem) {
+    return truncateText("👍", taskDisplaySize, " ");
+  }
+
+  if (("isDelete" === key) && taskItem) {
+    return truncateText("📦", taskDisplaySize, " ");
+  }
+
+  return truncateText(taskItem, taskDisplaySize, " ");
 }
 
 function truncateText(
@@ -149,15 +160,15 @@ function addTable(task: Task, widthData: WidthData): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(key, String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(key, String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(key, String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     }
@@ -203,15 +214,15 @@ function createTableFooter(task: Task, widthData: WidthData): string {
     if (index === 0) {
       result += TABLE_CHARS.verticalLine;
 
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(String(key), String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else if (keyList.length - 1 === index) {
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(String(key), String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     } else {
-      result += getTableContent(String(task[key]), widthData[key]);
+      result += getTableContent(String(key), String(task[key]), widthData[key]);
 
       result += TABLE_CHARS.verticalLine;
     }
